@@ -1,0 +1,1350 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SocialHub</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+
+    <script src="{% static 'js/script.js' %}" defer></script>
+</head>
+
+
+<body>
+
+
+<!-- ======================================== -->
+<!-- MESSAGES -->
+<!-- ======================================== -->
+
+{% if messages %}
+
+<div class="message-container">
+
+    {% for message in messages %}
+
+        <div class="message {{ message.tags }}">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ======================================== -->
+<!-- NAVBAR -->
+<!-- ======================================== -->
+
+{% if user.is_authenticated %}
+
+<nav class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{% url 'home' %}"
+           class="logo">
+
+            Social<span>Hub</span>
+
+        </a>
+
+
+        <div class="nav-search">
+
+            <form action="{% url 'search_users' %}"
+                  method="GET">
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search users..."
+                >
+
+            </form>
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+
+            <a href="{% url 'create_post' %}"
+               class="create-button">
+
+                + Post
+
+            </a>
+
+
+            <a href="{% url 'profile' user.username %}">
+                Profile
+            </a>
+
+
+            <a href="{% url 'logout' %}"
+               class="logout-link">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+{% endif %}
+
+
+
+<!-- ======================================== -->
+<!-- LOGIN PAGE -->
+<!-- ======================================== -->
+
+{% if page == "login" %}
+
+<section class="auth-section">
+
+    <div class="auth-container">
+
+
+        <div class="auth-brand">
+
+            <h1>
+                Social<span>Hub</span>
+            </h1>
+
+            <h2>
+                Connect. Share. Discover.
+            </h2>
+
+            <p>
+                Join our community and share your
+                moments with people around you.
+            </p>
+
+        </div>
+
+
+        <div class="auth-card">
+
+            <h2>Welcome Back</h2>
+
+            <p class="auth-subtitle">
+                Login to continue to SocialHub
+            </p>
+
+
+            <form method="POST"
+                  action="{% url 'login' %}">
+
+                {% csrf_token %}
+
+
+                <div class="input-group">
+
+                    <label>Username</label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    Login
+
+                </button>
+
+            </form>
+
+
+            <div class="auth-footer">
+
+                Don't have an account?
+
+                <a href="{% url 'register' %}">
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ======================================== -->
+<!-- REGISTER PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "register" %}
+
+<section class="auth-section">
+
+    <div class="auth-container">
+
+
+        <div class="auth-brand">
+
+            <h1>
+                Social<span>Hub</span>
+            </h1>
+
+            <h2>
+                Join our community
+            </h2>
+
+            <p>
+                Create your profile, share posts
+                and connect with other people.
+            </p>
+
+        </div>
+
+
+        <div class="auth-card">
+
+            <h2>Create Account</h2>
+
+            <p class="auth-subtitle">
+                It's quick and simple.
+            </p>
+
+
+            {% if form.errors %}
+
+            <div class="form-errors">
+
+                {% for field in form %}
+
+                    {% for error in field.errors %}
+
+                        <p>{{ error }}</p>
+
+                    {% endfor %}
+
+                {% endfor %}
+
+
+                {% for error in form.non_field_errors %}
+
+                    <p>{{ error }}</p>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+
+            <form method="POST"
+                  action="{% url 'register' %}">
+
+                {% csrf_token %}
+
+
+                <div class="input-group">
+
+                    <label>Username</label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        value="{{ request.POST.username }}"
+                        placeholder="Choose a username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ request.POST.email }}"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Create password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Confirm Password</label>
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        placeholder="Confirm password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+
+            <div class="auth-footer">
+
+                Already have an account?
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ======================================== -->
+<!-- HOME PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "home" %}
+
+<main class="main-layout">
+
+
+    <!-- LEFT PROFILE SIDEBAR -->
+
+    <aside class="profile-sidebar">
+
+        <div class="sidebar-profile-card">
+
+
+            {% if profile.profile_image %}
+
+                <img
+                    src="{{ profile.profile_image.url }}"
+                    class="profile-picture"
+                    alt="Profile"
+                >
+
+            {% else %}
+
+                <div class="default-avatar">
+
+                    {{ user.username|first|upper }}
+
+                </div>
+
+            {% endif %}
+
+
+            <h2>
+                {{ user.username }}
+            </h2>
+
+
+            <p class="profile-bio">
+
+                {% if profile.bio %}
+
+                    {{ profile.bio }}
+
+                {% else %}
+
+                    Add something about yourself.
+
+                {% endif %}
+
+            </p>
+
+
+            <div class="profile-stats">
+
+                <div>
+
+                    <strong>
+                        {{ user.posts.count }}
+                    </strong>
+
+                    <span>
+                        Posts
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ user.followers.count }}
+                    </strong>
+
+                    <span>
+                        Followers
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ user.following.count }}
+                    </strong>
+
+                    <span>
+                        Following
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'profile' user.username %}"
+                class="profile-button">
+
+                View Profile
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- FEED -->
+
+    <section class="feed">
+
+
+        <div class="create-post-box">
+
+            <div class="small-avatar">
+
+                {{ user.username|first|upper }}
+
+            </div>
+
+
+            <a
+                href="{% url 'create_post' %}"
+                class="post-placeholder">
+
+                What's on your mind?
+
+            </a>
+
+
+            <a
+                href="{% url 'create_post' %}"
+                class="small-create-button">
+
+                Post
+
+            </a>
+
+        </div>
+
+
+
+        {% for post in posts %}
+
+        <article class="post-card">
+
+
+            <!-- POST HEADER -->
+
+            <div class="post-header">
+
+                <a
+                    href="{% url 'profile' post.user.username %}"
+                    class="post-user"
+                >
+
+                    <div class="small-avatar">
+
+                        {{ post.user.username|first|upper }}
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            {{ post.user.username }}
+                        </strong>
+
+                        <span>
+                            {{ post.created_at|timesince }} ago
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                {% if post.user == user %}
+
+                <form
+                    action="{% url 'delete_post' post.id %}"
+                    method="POST"
+                    class="delete-form"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="delete-button"
+                        onclick="return confirmDelete()"
+                    >
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- CAPTION -->
+
+            <p class="post-caption">
+
+                {{ post.caption }}
+
+            </p>
+
+
+
+            <!-- POST IMAGE -->
+
+            {% if post.image %}
+
+                <img
+                    src="{{ post.image.url }}"
+                    class="post-image"
+                    alt="Post"
+                >
+
+            {% endif %}
+
+
+
+            <!-- POST STATS -->
+
+            <div class="post-stats">
+
+                <span>
+                    ❤️ {{ post.likes.count }}
+                    like{{ post.likes.count|pluralize }}
+                </span>
+
+                <span>
+                    {{ post.comments.count }}
+                    comment{{ post.comments.count|pluralize }}
+                </span>
+
+            </div>
+
+
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="post-actions">
+
+
+                <form
+                    method="POST"
+                    action="{% url 'like_post' post.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="action-button"
+                    >
+
+                        ❤️ Like / Unlike
+
+                    </button>
+
+                </form>
+
+
+                <button
+                    type="button"
+                    class="action-button"
+                    onclick="focusComment('{{ post.id }}')"
+                >
+
+                    💬 Comment
+
+                </button>
+
+            </div>
+
+
+
+            <!-- COMMENTS -->
+
+            <div class="comments-section">
+
+                {% for comment in post.comments.all %}
+
+                    <div class="comment">
+
+                        <strong>
+                            {{ comment.user.username }}
+                        </strong>
+
+                        <span>
+                            {{ comment.text }}
+                        </span>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="no-comment">
+                        No comments yet.
+                    </p>
+
+                {% endfor %}
+
+
+
+                <form
+                    method="POST"
+                    action="{% url 'add_comment' post.id %}"
+                    class="comment-form"
+                >
+
+                    {% csrf_token %}
+
+                    <input
+                        type="text"
+                        id="comment-{{ post.id }}"
+                        name="comment"
+                        placeholder="Write a comment..."
+                        maxlength="300"
+                        required
+                    >
+
+
+                    <button type="submit">
+                        Send
+                    </button>
+
+                </form>
+
+            </div>
+
+        </article>
+
+
+        {% empty %}
+
+
+        <div class="empty-card">
+
+            <h2>No posts yet</h2>
+
+            <p>
+                Be the first person to create a post.
+            </p>
+
+            <a
+                href="{% url 'create_post' %}"
+                class="primary-button">
+
+                Create Post
+
+            </a>
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </section>
+
+
+
+    <!-- RIGHT SIDEBAR -->
+
+    <aside class="right-sidebar">
+
+        <div class="side-card">
+
+            <h3>Welcome to SocialHub 👋</h3>
+
+            <p>
+                Discover people, create posts,
+                comment and build your network.
+            </p>
+
+
+            <a
+                href="{% url 'search_users' %}"
+                class="discover-button">
+
+                Discover People
+
+            </a>
+
+        </div>
+
+    </aside>
+
+</main>
+
+
+
+<!-- ======================================== -->
+<!-- CREATE POST PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "create_post" %}
+
+<main class="page-container">
+
+    <div class="form-card">
+
+        <div class="page-heading">
+
+            <h1>Create Post</h1>
+
+            <p>
+                Share something with your community.
+            </p>
+
+        </div>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="input-group">
+
+                <label>Caption</label>
+
+                <textarea
+                    name="caption"
+                    rows="5"
+                    placeholder="What's on your mind?"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Add Image
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    id="postImage"
+                    onchange="previewPostImage(event)"
+                >
+
+            </div>
+
+
+            <div id="imagePreviewContainer"
+                 class="image-preview-container"
+                 style="display:none;">
+
+                <img
+                    id="imagePreview"
+                    alt="Preview"
+                >
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <a
+                    href="{% url 'home' %}"
+                    class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    Publish Post
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+
+<!-- ======================================== -->
+<!-- PROFILE PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "profile" %}
+
+<main class="profile-page">
+
+
+    <section class="profile-header">
+
+
+        {% if profile.profile_image %}
+
+            <img
+                src="{{ profile.profile_image.url }}"
+                class="large-profile-picture"
+                alt="Profile"
+            >
+
+        {% else %}
+
+            <div class="large-default-avatar">
+
+                {{ profile_user.username|first|upper }}
+
+            </div>
+
+        {% endif %}
+
+
+
+        <div class="profile-info">
+
+            <h1>
+                {{ profile_user.username }}
+            </h1>
+
+
+            <p>
+
+                {% if profile.bio %}
+
+                    {{ profile.bio }}
+
+                {% else %}
+
+                    No bio added yet.
+
+                {% endif %}
+
+            </p>
+
+
+
+            <div class="profile-stats large-stats">
+
+                <div>
+
+                    <strong>
+                        {{ posts.count }}
+                    </strong>
+
+                    <span>
+                        Posts
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ followers_count }}
+                    </strong>
+
+                    <span>
+                        Followers
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ following_count }}
+                    </strong>
+
+                    <span>
+                        Following
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            {% if profile_user == user %}
+
+                <a
+                    href="{% url 'edit_profile' %}"
+                    class="primary-button profile-action">
+
+                    Edit Profile
+
+                </a>
+
+
+            {% else %}
+
+
+                <form
+                    method="POST"
+                    action="{% url 'follow_user' profile_user.username %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    {% if is_following %}
+
+                        <button
+                            type="submit"
+                            class="secondary-button profile-action">
+
+                            Unfollow
+
+                        </button>
+
+                    {% else %}
+
+                        <button
+                            type="submit"
+                            class="primary-button profile-action">
+
+                            Follow
+
+                        </button>
+
+                    {% endif %}
+
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+
+    <section class="profile-posts">
+
+        <h2>Posts</h2>
+
+
+        <div class="profile-post-grid">
+
+            {% for post in posts %}
+
+                <div class="profile-post-card">
+
+
+                    {% if post.image %}
+
+                        <img
+                            src="{{ post.image.url }}"
+                            alt="Post"
+                        >
+
+                    {% endif %}
+
+
+                    <div class="profile-post-content">
+
+                        <p>
+                            {{ post.caption }}
+                        </p>
+
+                        <div>
+
+                            ❤️ {{ post.likes.count }}
+
+                            &nbsp;&nbsp;
+
+                            💬 {{ post.comments.count }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            {% empty %}
+
+                <div class="empty-card">
+
+                    <h3>
+                        No posts yet
+                    </h3>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- ======================================== -->
+<!-- EDIT PROFILE PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "edit_profile" %}
+
+<main class="page-container">
+
+    <div class="form-card">
+
+        <div class="page-heading">
+
+            <h1>Edit Profile</h1>
+
+            <p>
+                Update your profile information.
+            </p>
+
+        </div>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="input-group">
+
+                <label>Bio</label>
+
+                <textarea
+                    name="bio"
+                    rows="4"
+                    maxlength="200"
+                    placeholder="Tell people something about yourself..."
+                >{{ profile.bio }}</textarea>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Profile Picture
+                </label>
+
+                <input
+                    type="file"
+                    name="profile_image"
+                    accept="image/*"
+                >
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <a
+                    href="{% url 'profile' user.username %}"
+                    class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+
+<!-- ======================================== -->
+<!-- SEARCH PAGE -->
+<!-- ======================================== -->
+
+{% elif page == "search" %}
+
+<main class="page-container">
+
+    <div class="search-page">
+
+        <div class="page-heading">
+
+            <h1>Discover People</h1>
+
+            <p>
+                Search for people and view their profiles.
+            </p>
+
+        </div>
+
+
+
+        <form
+            method="GET"
+            action="{% url 'search_users' %}"
+            class="big-search"
+        >
+
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                placeholder="Search username or name..."
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="primary-button">
+
+                Search
+
+            </button>
+
+        </form>
+
+
+
+        <div class="search-results">
+
+
+            {% if query %}
+
+
+                {% for found_user in users %}
+
+                    <div class="user-result-card">
+
+
+                        <div class="small-avatar">
+
+                            {{ found_user.username|first|upper }}
+
+                        </div>
+
+
+                        <div class="user-result-info">
+
+                            <strong>
+                                {{ found_user.username }}
+                            </strong>
+
+
+                            {% if found_user.first_name %}
+
+                                <span>
+
+                                    {{ found_user.first_name }}
+
+                                    {{ found_user.last_name }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'profile' found_user.username %}"
+                            class="profile-button">
+
+                            View Profile
+
+                        </a>
+
+                    </div>
+
+
+                {% empty %}
+
+                    <div class="empty-card">
+
+                        <h3>
+                            No users found
+                        </h3>
+
+                        <p>
+                            Try searching with another username.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div class="empty-card">
+
+                    <h3>
+                        Find people
+                    </h3>
+
+                    <p>
+                        Enter a username in the search box.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endif %}
+
+
+
+<!-- ======================================== -->
+<!-- FOOTER -->
+<!-- ======================================== -->
+
+{% if user.is_authenticated %}
+
+<footer>
+
+    <p>
+        SocialHub &copy; 2026
+    </p>
+
+</footer>
+
+{% endif %}
+
+
+</body>
+
+</html>
